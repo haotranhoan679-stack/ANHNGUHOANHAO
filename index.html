@@ -406,13 +406,24 @@
             utterance.rate = parseFloat(speed);
             utterance.pitch = 1.1;
             
-            const selectedVoice = voices.find(v => v.name === selectedVoiceName);
-            if (selectedVoice) {
-                utterance.voice = selectedVoice;
-            } else {
-                utterance.lang = 'en-US';
-            }
+          const selectedVoice = voices.find(v => v.name === selectedVoiceName);
 
+// Ưu tiên voice đã chọn
+if (selectedVoice) {
+    utterance.voice = selectedVoice;
+} else {
+    // Tự động chọn voice tiếng Anh tốt nhất
+    const bestVoice = voices.find(v => 
+        v.lang === 'en-US' && v.name.toLowerCase().includes('google')
+    ) || voices.find(v => v.lang === 'en-US') 
+      || voices[0];
+
+    if (bestVoice) {
+        utterance.voice = bestVoice;
+    }
+
+    utterance.lang = 'en-US';
+}
             const btn = document.getElementById('speakBtn') || document.activeElement;
             btn.classList.add('speaking');
             
